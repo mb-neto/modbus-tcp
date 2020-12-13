@@ -4,7 +4,7 @@ from pyModbusTCP.server import ModbusServer, DataBank
 from time import sleep
 from random import uniform
 
-server = ModbusServer(host="192.168.1.2", port=8000, no_block=True)
+server = ModbusServer(host="192.168.1.3", port=8000, no_block=True)
 
 try:
 	print("Iniciando servidor...")

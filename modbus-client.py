@@ -6,16 +6,18 @@ from time import sleep
 from random import uniform
 
 def start_machines(components, client):
-    print('Ligando'+ components[4] + '...')
-    client.write_single_coil(components[0],True)
-    print(components[4] + 'ligado!')
+    print('Máquinas ligadas!\n')
     while True:
-        client.write_single_register(components[1],int(uniform(components[2],components[3])))
-        sleep(1)
+        for machine in components:
+            client.write_single_coil(machine[0],True)
+            client.write_single_register(machine[1],int(uniform(machine[2],machine[3])))
+        sleep(3)
 
 def stop_machines(components, client):
-    client.write_single_register(components[1], components[2])
-    client.write_single_coil(components[0],False)
+    for machine in components:
+        client.write_single_register(machine[1], machine[2])
+        client.write_single_coil(machine[0],False)
+        print('\n'+ machine[4] + ' desligado(a)!')
     return
 
 def open_kitchen(host, port):
@@ -23,11 +25,12 @@ def open_kitchen(host, port):
     client.open()
     forno=(1,40001,0,250, 'Forno'); batedeira=(2,40002,0,10, 'Batedeira'); lavaloucas=(3,40003,0,10, 'Lava-louças')
     try:
-        start_machines(forno, client)
+        print('Ligando as máquinas da cozinha...\n')
+        start_machines([forno, batedeira,lavaloucas], client)
     except:
-        print('Desligando todos os componentes...')
-        stop_machines(forno, client)
-        print('Até mais!')
+        print('\n\nDesligando todos os componentes...')
+        stop_machines([forno, batedeira,lavaloucas], client)
+        print('\nAté mais!')
         return
 
 def close_kitchen(host, port):
@@ -36,9 +39,9 @@ def close_kitchen(host, port):
 
 def main(state, host, port):
     if state == 'open':
-        print('\n\n')
-        print('Boulos Chocolateria, Natal/RN \nRua '+ host +', \nNúmero '+ port + ', \n CEP DCA0130, \nComplemento: Turma 01')
-        print('\n\n')
+        print('\nSeja bem-vindo a nossa cozinha inteligente!\n')
+        print('Boulos Chocolateria, Natal/RN \nRua '+ host +', \nNúmero '+ port + ', \nCEP DCA0130, \nComplemento: Turma 01')
+        print('\n')
         print('Iniciando componentes da cozinha...\n')
         open_kitchen(host, port)
     else:
